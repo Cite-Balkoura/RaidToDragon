@@ -1,0 +1,33 @@
+import org.apache.tools.ant.filters.ReplaceTokens
+
+plugins {
+    id 'java'
+    id 'idea'
+}
+
+group 'fr.grimtown'
+version '0.0.1-SNAPSHOT'
+
+def spigotVersion = '1.17'
+def subVersion = '.1'
+
+sourceCompatibility = targetCompatibility = '1.16'
+
+repositories {
+    maven { url 'https://hub.spigotmc.org/nexus/content/repositories/snapshots' }
+    maven { url 'https://oss.sonatype.org/content/repositories/snapshots' }
+    maven { url 'https://jitpack.io' }
+    mavenCentral()
+    mavenLocal()
+}
+
+dependencies {
+    implementation group: 'org.jetbrains', name: 'annotations', version: '22.0.0'
+    implementation group: 'org.spigotmc', name: 'spigot', version: spigotVersion + subVersion + '-R0.1-SNAPSHOT'
+}
+
+processResources {
+    filter ReplaceTokens, tokens: [name: rootProject.name, version: rootProject.version, apiVersion: spigotVersion]
+}
+
+[compileJava, compileTestJava]*.options*.encoding = 'UTF-8'

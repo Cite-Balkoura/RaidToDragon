@@ -1,0 +1,15 @@
+name: @name@
+main: fr.grimtown.RaidToDragon.plugin.RaidPlugin
+version: @version@
+api-version: @apiVersion@
+description: 'Plugin for a short event of GrimTown to wait until the main event'
+author: GrimTown
+authors:
+  - BakaAless (Aless#6161)
+commands:
+  raidtodragon:
+    aliases:
+      - rtd
+      - todragon
+      - grimtownraidtodragon
+      - grimtownrdt
