@@ -1,6 +1,9 @@
 package fr.grimtown.RaidToDragon.plugin;
 
 import fr.grimtown.RaidToDragon.commands.CommandManager;
+import fr.grimtown.RaidToDragon.config.Config;
+import fr.grimtown.RaidToDragon.config.Messages;
+import fr.grimtown.RaidToDragon.config.Permissions;
 import fr.grimtown.RaidToDragon.entities.GameManager;
 import fr.grimtown.RaidToDragon.listeners.ListenerManager;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -17,6 +20,10 @@ public class RaidPlugin extends JavaPlugin {
 
     @Override
     public void onEnable() {
+        Config.get().init(this.getDataFolder().getAbsolutePath(), "config.yml");
+        Messages.init(this.getDataFolder().getAbsolutePath(), "messages.yml");
+        Permissions.init(this.getDataFolder().getAbsolutePath(), "permissions.yml");
+
         this.commandManager = new CommandManager();
         this.getCommand("raidtodragon").setExecutor(this.commandManager);
         this.getCommand("raidtodragon").setTabCompleter(this.commandManager);
