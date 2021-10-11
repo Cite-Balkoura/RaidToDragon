@@ -16,7 +16,15 @@ public class GameManager {
         if (this.started)
             return;
         this.players.forEach(player -> {
-            player.setFirstTime(System.currentTimeMillis());
+            player.setStartTime(System.currentTimeMillis());
         });
+    }
+
+    public ArrayList<GamePlayer> getPlayers() {
+        return this.players;
+    }
+
+    public boolean isStarted() {
+        return this.started;
     }
 }
