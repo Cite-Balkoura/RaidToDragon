@@ -5,7 +5,11 @@ import java.util.UUID;
 public class GamePlayer {
 
     private final UUID uniqueId;
+    private GameTeam team;
 
+    private boolean realPlayer;
+
+    private boolean dead;
     private boolean alreadyRevive;
     private double enderDamage;
 
@@ -17,11 +21,22 @@ public class GamePlayer {
 
     public GamePlayer(final UUID uniqueId) {
         this.uniqueId = uniqueId;
+
+        this.realPlayer = true;
+
+        this.dead = false;
         this.alreadyRevive = false;
         this.enderDamage = 0;
         this.startTime = -1;
         this.deadTime = -1;
         this.portalEndTime = -1;
+    }
+
+    public void kill() {
+        if (!this.alreadyRevive)
+            this.firstDeathTime = this.deadTime;
+        this.deadTime = System.currentTimeMillis();
+        this.dead = true;
     }
 
     public void resurrect(final GamePlayer doctor) {
@@ -30,10 +45,31 @@ public class GamePlayer {
         this.alreadyRevive = true;
         this.resurrectTime = System.currentTimeMillis();
         this.deadTime = 0L;
+        this.dead = false;
     }
 
     public UUID getUniqueId() {
         return uniqueId;
+    }
+
+    public GameTeam getTeam() {
+        return this.team;
+    }
+
+    public void setTeam(final GameTeam team) {
+        this.team = team;
+    }
+
+    public boolean isRealPlayer() {
+        return this.realPlayer;
+    }
+
+    public void setRealPlayer(final boolean realPlayer) {
+        this.realPlayer = realPlayer;
+    }
+
+    public boolean isDead() {
+        return this.dead;
     }
 
     public boolean wasRevived() {
@@ -58,12 +94,6 @@ public class GamePlayer {
 
     public long getDeadTime() {
         return this.deadTime;
-    }
-
-    public void setDeadTime(final long deadTime) {
-        if (this.wasRevived())
-            this.firstDeathTime = deadTime;
-        this.deadTime = deadTime;
     }
 
     public long getPortalEndTime() {
