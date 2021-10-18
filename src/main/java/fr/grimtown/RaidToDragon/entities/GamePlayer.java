@@ -1,5 +1,9 @@
 package fr.grimtown.RaidToDragon.entities;
 
+import fr.grimtown.RaidToDragon.updaters.gadgets.GadgetUpdater;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class GamePlayer {
@@ -7,12 +11,16 @@ public class GamePlayer {
     private final UUID uniqueId;
     private GameTeam team;
 
+    private String[] lastKnownInventory;
+    private List<GadgetUpdater> activeGadgets;
+
     private boolean realPlayer;
 
     private boolean dead;
     private boolean alreadyRevive;
     private double enderDamage;
 
+    private long lastRegen;
     private long startTime;
     private long firstDeathTime;
     private long resurrectTime;
@@ -22,6 +30,7 @@ public class GamePlayer {
     public GamePlayer(final UUID uniqueId) {
         this.uniqueId = uniqueId;
 
+        this.activeGadgets = new ArrayList<>();
         this.realPlayer = true;
 
         this.dead = false;
@@ -60,6 +69,18 @@ public class GamePlayer {
         this.team = team;
     }
 
+    public String[] getLastKnownInventory() {
+        return this.lastKnownInventory;
+    }
+
+    public void setLastKnownInventory(final String[] lastKnownInventory) {
+        this.lastKnownInventory = lastKnownInventory;
+    }
+
+    public List<GadgetUpdater> getActiveGadgets() {
+        return this.activeGadgets;
+    }
+
     public boolean isRealPlayer() {
         return this.realPlayer;
     }
@@ -72,6 +93,10 @@ public class GamePlayer {
         return this.dead;
     }
 
+    public boolean isAlive() {
+        return !this.dead;
+    }
+
     public boolean wasRevived() {
         return this.alreadyRevive;
     }
@@ -80,8 +105,16 @@ public class GamePlayer {
         return this.enderDamage;
     }
 
-    public void setEnderDamage(final double enderDamage) {
-        this.enderDamage = enderDamage;
+    public void addEnderDamage(final double enderDamage) {
+        this.enderDamage += enderDamage;
+    }
+
+    public long getLastRegen() {
+        return this.lastRegen;
+    }
+
+    public void setLastRegen(final long lastRegen) {
+        this.lastRegen = lastRegen;
     }
 
     public long getStartTime() {
