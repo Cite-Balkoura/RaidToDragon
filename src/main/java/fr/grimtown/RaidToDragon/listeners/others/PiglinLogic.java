@@ -10,7 +10,6 @@ public class PiglinLogic {
      * @param event the damage event.
      */
     public static void run(final EntityDamageEvent event) {
-        System.out.println(event.getCause());
         if (    event.getCause() != EntityDamageEvent.DamageCause.VOID && (
                 event.getEntityType() == EntityType.PIGLIN          ||
                 event.getEntityType() == EntityType.PIGLIN_BRUTE    ||
