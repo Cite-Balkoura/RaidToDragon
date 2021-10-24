@@ -19,6 +19,10 @@ public class XWatch extends GadgetUpdater {
         super(player, gamePlayer, time, radius);
     }
 
+    /**
+     * Beware : glowing effect doesn't match at all with shaders.
+     * So please don't use this with shaders (even internal ones)
+     */
     @Override
     public void run() {
         if (this.lastGlowing != null)
