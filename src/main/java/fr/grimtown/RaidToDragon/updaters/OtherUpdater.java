@@ -7,7 +7,6 @@ import fr.grimtown.RaidToDragon.updaters.gadgets.GadgetUpdater;
 import fr.grimtown.RaidToDragon.updaters.gadgets.IndicCompass;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.CompassMeta;
 import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.Optional;
@@ -30,15 +29,8 @@ public class OtherUpdater extends BukkitRunnable {
             ) {
                 optionalPlayer = GameAdapter.adapt(gamePlayer);
                 optionalPlayer.ifPresent(player -> {
-                    final Location location = player.getLocation().add((Math.random() - 0.5) * 16, (Math.random() - 0.5) * 16, (Math.random() - 0.5) * 16);
+                    final Location location = player.getLocation().add((Math.random() - 0.5) * 64, 0, (Math.random() - 0.5) * 64);
                     player.setCompassTarget(location);
-
-                    player.getInventory().forEach(itemStack -> {
-                        if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta() instanceof CompassMeta compass) {
-                            compass.setLodestoneTracked(true);
-                            compass.setLodestone(player.getLocation());
-                        }
-                    });
                 });
             }
         }

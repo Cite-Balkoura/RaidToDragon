@@ -15,8 +15,8 @@ public class IndicCompass extends GadgetUpdater {
 
     private boolean found;
 
-    public IndicCompass(final Player player, final long time, final double radius) {
-        super(player, time, radius);
+    public IndicCompass(final Player player, final GamePlayer gamePlayer, final long time, final double radius) {
+        super(player, gamePlayer, time, radius);
         this.found = false;
     }
 
@@ -24,7 +24,7 @@ public class IndicCompass extends GadgetUpdater {
     public void run() {
         if (System.currentTimeMillis() > this.end) {
             this.cancel();
-            this.gamePlayer.ifPresent(gamePlayer -> gamePlayer.getActiveGadgets().remove(this));
+            this.gamePlayer.getActiveGadgets().remove(this);
             if (!this.found)
                 Logger.log(this.player, Messages.INFO_GADGET_COMPASS_ACTIVE_FAIL.get());
             return;
@@ -49,15 +49,9 @@ public class IndicCompass extends GadgetUpdater {
             return;
         this.found = true;
         gamePlayer.get().getTeam().setLastKnowPosition(System.currentTimeMillis());
-        GameAdapter.adapt(gamePlayer.get()).ifPresent(opponent -> {
-            this.player.setCompassTarget(opponent.getLocation());
-            this.player.getInventory().forEach(itemStack -> {
-                if (itemStack != null && itemStack.hasItemMeta() && itemStack.getItemMeta() instanceof CompassMeta compass) {
-                    compass.setLodestoneTracked(true);
-                    compass.setLodestone(opponent.getLocation());
-                }
-            });
-        });
+        GameAdapter.adapt(gamePlayer.get()).ifPresent(opponent ->
+            this.player.setCompassTarget(opponent.getLocation())
+        );
         Utils.sendActionBar(this.player, Messages.INFO_GADGET_COMPASS_ACTIVE_FOUND.get(Utils.truncate(Math.sqrt(distance), 2)));
     }
 

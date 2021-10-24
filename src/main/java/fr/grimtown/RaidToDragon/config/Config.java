@@ -25,17 +25,18 @@ public class Config {
     private long regen_time = 5 * 60 * 60 * 1000L;
     private long regen_update = 15 * 20L;
 
-    private String x$watch_name = "&3Montre à rayons X";
-    private String x$watch_lore = "(>: new||line :<)";
-    private long x$watch_time = 3 * 1000L;
-    private long x$watch_update = 10L;
-    private double x$watch_radius = 50D;
+    private String gadgets_x$watch_name = "&3Montre à rayons X";
+    private String gadgets_x$watch_lore = "(>: new||line :<)";
+    private String gadgets_x$watch_color = "WHITE";
+    private long gadgets_x$watch_time = 3 * 1000L;
+    private long gadgets_x$watch_update = 10L;
+    private double gadgets_x$watch_radius = 50D;
 
-    private String indic$compass_name = "&3Boussole d'indication";
-    private String indic$compass_lore = "(>: new||line :<)";
-    private long indic$compass_time = 6 * 1000L;
-    private long indic$compass_update = 10L;
-    private double indic$compass_radius = -1D;
+    private String gadgets_indic$compass_name = "&3Boussole d'indication";
+    private String gadgets_indic$compass_lore = "(>: new||line :<)";
+    private long gadgets_indic$compass_time = 6 * 1000L;
+    private long gadgets_indic$compass_update = 10L;
+    private double gadgets_indic$compass_radius = -1D;
 
     private long other_update = 20L;
 
@@ -84,43 +85,47 @@ public class Config {
     }
 
     public String getXWatchName() {
-        return ChatColor.translateAlternateColorCodes('&', this.x$watch_name);
+        return ChatColor.translateAlternateColorCodes('&', this.gadgets_x$watch_name);
     }
 
     public String[] getXWatchLore() {
-        return this.x$watch_lore.split("\\|\\|");
+        return this.gadgets_x$watch_lore.split("\\|\\|");
+    }
+
+    public String getXWatchColor() {
+        return this.gadgets_x$watch_color;
     }
 
     public long getXWatchTime() {
-        return this.x$watch_time;
+        return this.gadgets_x$watch_time;
     }
 
     public long getXWatchUpdate() {
-        return this.x$watch_update;
+        return this.gadgets_x$watch_update;
     }
 
     public double getXWatchRadius() {
-        return this.x$watch_radius;
+        return this.gadgets_x$watch_radius;
     }
 
     public String getIndicCompassName() {
-        return ChatColor.translateAlternateColorCodes('&', this.indic$compass_name);
+        return ChatColor.translateAlternateColorCodes('&', this.gadgets_indic$compass_name);
     }
 
     public String[] getIndicCompassLore() {
-        return this.indic$compass_lore.split("\\|\\|");
+        return this.gadgets_indic$compass_lore.split("\\|\\|");
     }
 
     public long getIndicCompassTime() {
-        return this.indic$compass_time;
+        return this.gadgets_indic$compass_time;
     }
 
     public long getIndicCompassUpdate() {
-        return this.indic$compass_update;
+        return this.gadgets_indic$compass_update;
     }
 
     public double getIndicCompassRadius() {
-        return this.indic$compass_radius;
+        return this.gadgets_indic$compass_radius;
     }
 
     public long getOtherUpdate() {

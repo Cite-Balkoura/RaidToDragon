@@ -3,6 +3,8 @@ main: fr.grimtown.RaidToDragon.plugin.RaidPlugin
 version: @version@
 api-version: @apiVersion@
 description: 'Plugin for a short event of GrimTown to wait until the main event'
+depend:
+  - GlowAPI
 author: GrimTown
 authors:
   - BakaAless (Aless#6161)
