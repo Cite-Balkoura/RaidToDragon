@@ -4,7 +4,7 @@ import fr.grimtown.RaidToDragon.config.Config;
 import fr.grimtown.RaidToDragon.config.Messages;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
-import fr.grimtown.RaidToDragon.plugin.Logger;
+import fr.grimtown.RaidToDragon.logs.Logger;
 import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
 import fr.grimtown.RaidToDragon.updaters.gadgets.GadgetUpdater;
 import fr.grimtown.RaidToDragon.updaters.gadgets.IndicCompass;

@@ -4,10 +4,9 @@ import fr.grimtown.RaidToDragon.config.Config;
 import fr.grimtown.RaidToDragon.config.Messages;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
-import fr.grimtown.RaidToDragon.plugin.Logger;
+import fr.grimtown.RaidToDragon.logs.Logger;
 import fr.grimtown.RaidToDragon.utils.Utils;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.meta.CompassMeta;
 
 import java.util.Optional;
 

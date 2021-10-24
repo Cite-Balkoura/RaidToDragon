@@ -1,7 +1,8 @@
-package fr.grimtown.RaidToDragon.plugin;
+package fr.grimtown.RaidToDragon.logs;
 
 import fr.grimtown.RaidToDragon.config.Config;
 import fr.grimtown.RaidToDragon.config.Permissions;
+import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 

@@ -1,7 +1,7 @@
 package fr.grimtown.RaidToDragon.commands;
 
 import fr.grimtown.RaidToDragon.config.Messages;
-import fr.grimtown.RaidToDragon.plugin.Logger;
+import fr.grimtown.RaidToDragon.logs.Logger;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
