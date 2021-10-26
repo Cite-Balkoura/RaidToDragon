@@ -11,8 +11,7 @@ import java.util.Optional;
 public class GameAdapter {
 
     public static Optional<GamePlayer> adapt(final Player player) {
-        return RaidPlugin.get().getGameManager().getPlayers()
-                .stream().filter(gamePlayer -> gamePlayer.getUniqueId().equals(player.getUniqueId())).findFirst();
+        return Optional.ofNullable(RaidPlugin.get().getGameManager().getPlayers().get(player.getUniqueId()));
     }
 
     public static Optional<Player> adapt(final GamePlayer gamePlayer) {

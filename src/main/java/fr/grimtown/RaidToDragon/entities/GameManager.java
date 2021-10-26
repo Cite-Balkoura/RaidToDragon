@@ -4,31 +4,34 @@ import fr.grimtown.RaidToDragon.config.Config;
 import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
 import fr.grimtown.RaidToDragon.updaters.OtherUpdater;
 import fr.grimtown.RaidToDragon.updaters.RegenUpdater;
+import fr.grimtown.RaidToDragon.updaters.TotemUpdater;
 
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 public class GameManager {
 
-    private final ArrayList<GamePlayer> players;
+    private final Map<UUID, GamePlayer> players;
     private boolean started;
 
     private final RegenUpdater regen;
     private final OtherUpdater other;
 
     public GameManager() {
-        this.players = new ArrayList<>();
+        this.players = new HashMap<>();
         this.started = false;
         this.regen = new RegenUpdater();
         this.other = new OtherUpdater(this);
-
     }
 
     public void start() {
         if (this.started)
             return;
-        this.players.forEach(player -> {
-            player.setStartTime(System.currentTimeMillis());
-        });
+        this.players.values().forEach(player ->
+            player.setStartTime(System.currentTimeMillis())
+        );
         this.regen.runTaskTimer(RaidPlugin.get(), 0L, Config.get().getRegenUpdate());
         this.other.runTaskTimer(RaidPlugin.get(), 0L, Config.get().getOtherUpdate());
     }
@@ -40,7 +43,7 @@ public class GameManager {
             this.other.cancel();
     }
 
-    public ArrayList<GamePlayer> getPlayers() {
+    public Map<UUID, GamePlayer> getPlayers() {
         return this.players;
     }
 
