@@ -22,7 +22,7 @@ public class OtherUpdater extends BukkitRunnable {
     @Override
     public void run() {
         Optional<Player> optionalPlayer;
-        for (final GamePlayer gamePlayer : this.manager.getPlayers()) {
+        for (final GamePlayer gamePlayer : this.manager.getPlayers().values()) {
             if (gamePlayer.getActiveGadgets().stream()
                     .noneMatch(gadget ->
                             gadget.getType() == GadgetUpdater.Gadget.COMPASS && ((IndicCompass) gadget).hasFound())

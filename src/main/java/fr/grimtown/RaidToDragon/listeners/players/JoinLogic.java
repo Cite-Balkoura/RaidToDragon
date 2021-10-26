@@ -13,5 +13,6 @@ public class JoinLogic {
                 ).findAny().ifPresent(world ->
                         event.getPlayer().setCompassTarget(world.getSpawnLocation())
                 );
+        RaidPlugin.get().register(event.getPlayer());
     }
 }

@@ -7,7 +7,10 @@ import fr.grimtown.RaidToDragon.config.Permissions;
 import fr.grimtown.RaidToDragon.entities.GameManager;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.GameTeam;
+import fr.grimtown.RaidToDragon.libs.citizens.trait.SleepingTrait;
 import fr.grimtown.RaidToDragon.listeners.ListenerManager;
+import net.citizensnpcs.api.CitizensAPI;
+import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -18,6 +21,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.stream.Collectors;
 
 public class RaidPlugin extends JavaPlugin {
 
@@ -31,11 +35,12 @@ public class RaidPlugin extends JavaPlugin {
 
     private NamespacedKey watchKey;
     private ItemStack watch;
-    private ShapedRecipe watchRecipe;
 
     private NamespacedKey compassKey;
     private ItemStack compass;
-    private ShapedRecipe compassRecipe;
+
+    private NamespacedKey totemKey;
+    private ItemStack totem;
 
     @Override
     public void onEnable() {
@@ -59,15 +64,15 @@ public class RaidPlugin extends JavaPlugin {
             this.watch.setItemMeta(watchMeta);
         }
 
-        this.watchRecipe = new ShapedRecipe(this.watchKey, this.watch);
+        final ShapedRecipe watchRecipe = new ShapedRecipe(this.watchKey, this.watch);
 
-        this.watchRecipe.shape(" B ", "RGR", "III");
-        this.watchRecipe.setIngredient('B', Material.BELL);
-        this.watchRecipe.setIngredient('R', Material.REDSTONE);
-        this.watchRecipe.setIngredient('G', Material.RAW_GOLD_BLOCK);
-        this.watchRecipe.setIngredient('I', Material.RAW_IRON_BLOCK);
+        watchRecipe.shape(" B ", "RGR", "III");
+        watchRecipe.setIngredient('B', Material.BELL);
+        watchRecipe.setIngredient('R', Material.REDSTONE);
+        watchRecipe.setIngredient('G', Material.RAW_GOLD_BLOCK);
+        watchRecipe.setIngredient('I', Material.RAW_IRON_BLOCK);
 
-        this.getServer().addRecipe(this.watchRecipe);
+        this.getServer().addRecipe(watchRecipe);
 
 
         this.compassKey = new NamespacedKey(this, "indic_compass");
@@ -79,19 +84,44 @@ public class RaidPlugin extends JavaPlugin {
             compassMeta.setLodestoneTracked(false);
             this.compass.setItemMeta(compassMeta);
         }
-        this.compassRecipe = new ShapedRecipe(this.compassKey, this.compass);
+        final ShapedRecipe compassRecipe = new ShapedRecipe(this.compassKey, this.compass);
 
-        this.compassRecipe.shape("RAR", "III", "CCC");
-        this.compassRecipe.setIngredient('R', Material.REDSTONE);
-        this.compassRecipe.setIngredient('A', Material.ARROW);
-        this.compassRecipe.setIngredient('I', Material.RAW_IRON_BLOCK);
-        this.compassRecipe.setIngredient('C', Material.RAW_COPPER_BLOCK);
+        compassRecipe.shape("RAR", "III", "CCC");
+        compassRecipe.setIngredient('R', Material.REDSTONE);
+        compassRecipe.setIngredient('A', Material.ARROW);
+        compassRecipe.setIngredient('I', Material.RAW_IRON_BLOCK);
+        compassRecipe.setIngredient('C', Material.RAW_COPPER_BLOCK);
 
-        this.getServer().addRecipe(this.compassRecipe);
+        this.getServer().addRecipe(compassRecipe);
+
+
+        this.totemKey = new NamespacedKey(this, "totem");
+        this.totem = new ItemStack(Material.TOTEM_OF_UNDYING, 1);
+        if (this.totem.getItemMeta() != null) {
+            final ItemMeta totemMeta = this.totem.getItemMeta();
+            totemMeta.setDisplayName(Config.get().getGadgetsTotemName());
+            totemMeta.setLore(Arrays.asList(Config.get().getGadgetsTotemLore()));
+            this.totem.setItemMeta(totemMeta);
+        }
+        final ShapedRecipe totemRecipe = new ShapedRecipe(this.totemKey, this.totem);
+
+        totemRecipe.shape(" G ", "CEC", " A ");
+        totemRecipe.setIngredient('G', Material.GOLDEN_HELMET);
+        totemRecipe.setIngredient('C', Material.LIGHTNING_ROD);
+        totemRecipe.setIngredient('E', Material.ENDER_EYE);
+        totemRecipe.setIngredient('A', Material.ARMOR_STAND);
+
+        this.getServer().addRecipe(totemRecipe);
 
         /*
           Create managers
          */
+        CitizensAPI.getTraitFactory().getRegisteredTraits()
+                .stream().filter(traitInfo -> traitInfo.getTraitName().equalsIgnoreCase("sleeping"))
+                .collect(Collectors.toList())
+                .forEach(traitInfo -> CitizensAPI.getTraitFactory().deregisterTrait(traitInfo));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
+
         this.commandManager = new CommandManager();
         this.getCommand("raidtodragon").setExecutor(this.commandManager);
         this.getCommand("raidtodragon").setTabCompleter(this.commandManager);
@@ -109,14 +139,19 @@ public class RaidPlugin extends JavaPlugin {
     public void onDisable() {
         this.getServer().removeRecipe(this.watchKey);
         this.getServer().removeRecipe(this.compassKey);
+        this.getServer().removeRecipe(this.totemKey);
         this.gameManager.stop();
     }
 
     public void register(final Player player) {
+        if (this.gameManager.getPlayers().containsKey(player.getUniqueId())) {
+            this.gameManager.getPlayers().get(player.getUniqueId()).setOnline(true);
+            return;
+        }
         final GamePlayer gamePlayer = new GamePlayer(player.getUniqueId());
         final GameTeam gameTeam = new GameTeam(new GamePlayer[] { gamePlayer });
         gamePlayer.setTeam(gameTeam);
-        this.getGameManager().getPlayers().add(gamePlayer);
+        this.getGameManager().getPlayers().put(player.getUniqueId(), gamePlayer);
     }
 
     public CommandManager getCommandManager() {
@@ -137,5 +172,9 @@ public class RaidPlugin extends JavaPlugin {
 
     public ItemStack getCompass() {
         return this.compass;
+    }
+
+    public ItemStack getTotem() {
+        return this.totem;
     }
 }

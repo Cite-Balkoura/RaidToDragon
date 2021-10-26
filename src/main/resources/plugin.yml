@@ -5,6 +5,7 @@ api-version: @apiVersion@
 description: 'Plugin for a short event of GrimTown to wait until the main event'
 depend:
   - GlowAPI
+  - Citizens
 author: GrimTown
 authors:
   - BakaAless (Aless#6161)

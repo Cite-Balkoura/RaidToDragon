@@ -38,6 +38,13 @@ public class Config {
     private long gadgets_indic$compass_update = 10L;
     private double gadgets_indic$compass_radius = -1D;
 
+    private String gadgets_totem_name = "&3Totem de résurrection";
+    private String gadgets_totem_lore = "(>: new||line :<)";
+    private int gadgets_totem_length = -1;
+    private int gadgets_totem_particles = 3;
+    private double gadgets_totem_cycle = 10D;
+    private long gadgets_totem_update = 1L;
+
     private long other_update = 20L;
 
     private Config() {
@@ -126,6 +133,30 @@ public class Config {
 
     public double getIndicCompassRadius() {
         return this.gadgets_indic$compass_radius;
+    }
+
+    public String getGadgetsTotemName() {
+        return ChatColor.translateAlternateColorCodes('&', this.gadgets_totem_name);
+    }
+
+    public String[] getGadgetsTotemLore() {
+        return this.gadgets_totem_lore.split("\\|\\|");
+    }
+
+    public int getTotemLength() {
+        return this.gadgets_totem_length;
+    }
+
+    public int getTotemParticles() {
+        return this.gadgets_totem_particles;
+    }
+
+    public double getTotemCycle() {
+        return this.gadgets_totem_cycle;
+    }
+
+    public long getTotemUpdate() {
+        return this.gadgets_totem_update;
     }
 
     public long getOtherUpdate() {

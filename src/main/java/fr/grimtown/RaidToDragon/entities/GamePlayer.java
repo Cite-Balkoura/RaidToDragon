@@ -1,6 +1,8 @@
 package fr.grimtown.RaidToDragon.entities;
 
 import fr.grimtown.RaidToDragon.updaters.gadgets.GadgetUpdater;
+import org.bukkit.Bukkit;
+import org.bukkit.Location;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,7 +16,10 @@ public class GamePlayer {
     private String[] lastKnownInventory;
     private List<GadgetUpdater> activeGadgets;
 
+    private Location lastGroundPosition;
+
     private boolean realPlayer;
+    private boolean online;
 
     private boolean dead;
     private boolean alreadyRevive;
@@ -32,6 +37,7 @@ public class GamePlayer {
 
         this.activeGadgets = new ArrayList<>();
         this.realPlayer = true;
+        this.online = true;
 
         this.dead = false;
         this.alreadyRevive = false;
@@ -89,6 +95,14 @@ public class GamePlayer {
         this.realPlayer = realPlayer;
     }
 
+    public Location getLastGroundPosition() {
+        return this.lastGroundPosition;
+    }
+
+    public void setLastGroundPosition(final Location lastGroundPosition) {
+        this.lastGroundPosition = lastGroundPosition;
+    }
+
     public boolean isDead() {
         return this.dead;
     }
@@ -139,5 +153,13 @@ public class GamePlayer {
 
     public long timeUntilEnter() {
         return this.portalEndTime - this.startTime;
+    }
+
+    public boolean isOnline() {
+        return this.online;
+    }
+
+    public void setOnline(final boolean online) {
+        this.online = online;
     }
 }

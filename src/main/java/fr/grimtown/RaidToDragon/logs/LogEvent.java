@@ -15,4 +15,12 @@ public abstract class LogEvent {
         this.timestamp = System.currentTimeMillis();
         EVENTS_LIST.add(this);
     }
+
+    public UUID getPlayer() {
+        return this.playerId;
+    }
+
+    public long getTimestamp() {
+        return this.timestamp;
+    }
 }

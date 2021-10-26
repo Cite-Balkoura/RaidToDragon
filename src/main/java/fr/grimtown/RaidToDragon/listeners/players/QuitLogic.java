@@ -8,9 +8,10 @@ public class QuitLogic {
 
     public static void run(final PlayerQuitEvent event) {
         event.setQuitMessage("");
-        GameAdapter.adapt(event.getPlayer()).ifPresent(player ->
-                player.setLastKnownInventory(ItemSerializer.playerInventoryToBase64(event.getPlayer().getInventory()))
-        );
+        GameAdapter.adapt(event.getPlayer()).ifPresent(player -> {
+                player.setLastKnownInventory(ItemSerializer.playerInventoryToBase64(event.getPlayer().getInventory()));
+                player.setOnline(false);
+        });
     }
 
 }

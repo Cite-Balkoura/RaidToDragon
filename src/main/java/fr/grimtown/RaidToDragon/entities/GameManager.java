@@ -18,12 +18,14 @@ public class GameManager {
 
     private final RegenUpdater regen;
     private final OtherUpdater other;
+    private final TotemUpdater totem;
 
     public GameManager() {
         this.players = new HashMap<>();
         this.started = false;
         this.regen = new RegenUpdater();
         this.other = new OtherUpdater(this);
+        this.totem = new TotemUpdater();
     }
 
     public void start() {
@@ -34,6 +36,7 @@ public class GameManager {
         );
         this.regen.runTaskTimer(RaidPlugin.get(), 0L, Config.get().getRegenUpdate());
         this.other.runTaskTimer(RaidPlugin.get(), 0L, Config.get().getOtherUpdate());
+        this.totem.runTaskTimer(RaidPlugin.get(), 0L, Config.get().getTotemUpdate());
     }
 
     public void stop() {
@@ -41,6 +44,8 @@ public class GameManager {
             this.regen.cancel();
         if (!this.other.isCancelled())
             this.other.cancel();
+        if (!this.totem.isCancelled())
+            this.totem.cancel();
     }
 
     public Map<UUID, GamePlayer> getPlayers() {

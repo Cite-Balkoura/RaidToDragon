@@ -1,5 +1,7 @@
 package fr.grimtown.RaidToDragon.utils;
 
+import com.mojang.authlib.GameProfile;
+import com.mojang.authlib.properties.Property;
 import net.md_5.bungee.api.ChatMessageType;
 import net.md_5.bungee.api.chat.TextComponent;
 import org.bukkit.entity.Player;
@@ -15,7 +17,8 @@ public class Utils {
 
     public static String truncate(final double x, final int pow) {
         int n2;
-        StringTokenizer t = new StringTokenizer(String.valueOf(Math.round(x * Math.pow(10, pow)) / Math.pow(10, pow)), ".");
+        final String token = String.valueOf(Math.round(x * Math.pow(10, pow)) / Math.pow(10, pow));
+        StringTokenizer t = new StringTokenizer(token, ".");
         String s1 = t.nextToken();
         String s2 = t.nextToken();
         n2 = s2.length();
@@ -25,7 +28,7 @@ public class Utils {
         if (n2 == 0 || (n2 == 1 && s2.charAt(0) == '0')) {
             return s1;
         }
-        return String.valueOf(x);
+        return token;
     }
 
     public static String fromDuration(final long timeStamp) {
@@ -56,6 +59,16 @@ public class Utils {
 
     private static boolean isNotNull(final int numbers, final int... integers) {
         return Arrays.stream(integers).asDoubleStream().filter(number -> number != 0).count() == numbers;
+    }
+
+    public static String[] getSkin(final Player player) {
+        final GameProfile gameProfile = (GameProfile) ReflectionUtils.executeMethod(ReflectionUtils.getHandle(player),"getProfile");
+        if (gameProfile == null)
+            return new String[] { "", "" };
+        final Property property = gameProfile.getProperties().get("textures").iterator().next();
+        final String value = property.getValue();
+        final String signature = property.getSignature();
+        return new String[] { value, signature };
     }
 
 }

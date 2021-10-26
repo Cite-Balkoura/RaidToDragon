@@ -19,7 +19,7 @@ public class RegenUpdater extends BukkitRunnable {
     @Override
     public void run() {
         final long now = System.currentTimeMillis();
-        RaidPlugin.get().getGameManager().getPlayers().stream().filter(GamePlayer::isAlive).forEach(player -> {
+        RaidPlugin.get().getGameManager().getPlayers().values().stream().filter(GamePlayer::isAlive).filter(GamePlayer::isOnline).forEach(player -> {
             if (player.getLastRegen() + this.time <= now) {
                 player.setLastRegen(now);
                 GameAdapter.adapt(player).ifPresent(bukkitPlayer ->

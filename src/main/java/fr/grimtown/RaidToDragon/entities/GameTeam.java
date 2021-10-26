@@ -10,6 +10,10 @@ public class GameTeam {
         this.lastKnowPosition = -1L;
     }
 
+    public GamePlayer[] getPlayers() {
+        return this.players;
+    }
+
     public long getLastKnowPosition() {
         return this.lastKnowPosition;
     }
