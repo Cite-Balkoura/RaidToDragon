@@ -22,7 +22,7 @@ public class WinLogic {
             public void run() {
                 POTENTIAL_WINNERS.remove(event.getEntity().getUniqueId());
             }
-        }.runTaskLater(RaidPlugin.get(), 2 * 20L);
+        }.runTaskLater(RaidPlugin.get(), 20L); // TODO : the time may be reduced
     }
 
     public static void run(final PlayerChangedWorldEvent event) {
