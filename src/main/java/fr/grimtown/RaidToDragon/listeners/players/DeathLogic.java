@@ -1,5 +1,6 @@
 package fr.grimtown.RaidToDragon.listeners.players;
 
+import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
 import fr.grimtown.RaidToDragon.libs.citizens.trait.SleepingTrait;
 import fr.grimtown.RaidToDragon.logs.DeathLog;
@@ -11,7 +12,6 @@ import net.citizensnpcs.api.npc.NPC;
 import net.citizensnpcs.trait.Gravity;
 import net.citizensnpcs.trait.MountTrait;
 import net.citizensnpcs.trait.SkinTrait;
-import net.citizensnpcs.util.PlayerAnimation;
 import org.bukkit.Bukkit;
 import org.bukkit.GameMode;
 import org.bukkit.Location;
@@ -21,14 +21,12 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.scheduler.BukkitRunnable;
 
-import java.util.Map;
-import java.util.Optional;
-import java.util.UUID;
-import java.util.WeakHashMap;
+import java.util.*;
 
 public class DeathLogic {
 
     public static final Map<NPC, Player> NPC_MAP = new WeakHashMap<>();
+    public static final Map<UUID, NPC> UUID_MAP = new WeakHashMap<>();
 
     public static void run(final PlayerDeathEvent event) {
         new DeathLog(event.getEntity(),
@@ -41,7 +39,8 @@ public class DeathLogic {
             location.setPitch(0.1f);
             player.kill();
             NPC npc = null;
-            if (!player.wasRevived()) {
+            final boolean alone = Arrays.stream(player.getTeam().getPlayers()).noneMatch(GamePlayer::isAlive);
+            if (!player.wasRevived() && !alone) {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, String.valueOf(UUID.randomUUID()));
                 npc.setName("");
                 npc.setAlwaysUseNameHologram(false);
@@ -66,6 +65,7 @@ public class DeathLogic {
                     }
                 }.runTaskTimer(RaidPlugin.get(), 0L, 2L);
                 NPC_MAP.put(npc, event.getEntity());
+                UUID_MAP.put(event.getEntity().getUniqueId(), npc);
             }
             final NPC finalNpc = npc;
             Bukkit.getScheduler().runTaskLater(RaidPlugin.get(), () -> {
@@ -73,7 +73,8 @@ public class DeathLogic {
                 event.getEntity().setGameMode(GameMode.SPECTATOR);
                 if (finalNpc != null)
                     event.getEntity().setSpectatorTarget(finalNpc.getEntity());
-                event.getEntity().teleport(location);
+                else // TODO : make player spectate other team mate or kick if all members of his team are dead
+                    event.getEntity().teleport(location);
             }, 2L);
         });
     }

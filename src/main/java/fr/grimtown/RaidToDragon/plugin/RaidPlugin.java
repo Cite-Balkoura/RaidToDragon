@@ -9,8 +9,10 @@ import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.GameTeam;
 import fr.grimtown.RaidToDragon.libs.citizens.trait.SleepingTrait;
 import fr.grimtown.RaidToDragon.listeners.ListenerManager;
+import fr.grimtown.RaidToDragon.listeners.players.DeathLogic;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
+import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
@@ -21,6 +23,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class RaidPlugin extends JavaPlugin {
@@ -137,6 +140,16 @@ public class RaidPlugin extends JavaPlugin {
 
     @Override
     public void onDisable() {
+
+        DeathLogic.NPC_MAP.forEach((npc, player) -> {
+            if (player != null && player.isOnline()) {
+                player.setSpectatorTarget(null);
+                player.setGameMode(GameMode.ADVENTURE);
+            }
+            npc.despawn();
+            npc.destroy();
+        });
+
         this.getServer().removeRecipe(this.watchKey);
         this.getServer().removeRecipe(this.compassKey);
         this.getServer().removeRecipe(this.totemKey);

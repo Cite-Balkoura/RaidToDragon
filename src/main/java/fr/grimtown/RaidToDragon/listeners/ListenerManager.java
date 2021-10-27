@@ -1,26 +1,33 @@
 package fr.grimtown.RaidToDragon.listeners;
 
+import com.destroystokyo.paper.event.player.PlayerStopSpectatingEntityEvent;
+import com.destroystokyo.paper.event.player.PlayerTeleportEndGatewayEvent;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
 import fr.grimtown.RaidToDragon.listeners.others.PiglinLogic;
 import fr.grimtown.RaidToDragon.listeners.players.*;
+import fr.grimtown.RaidToDragon.logs.Logger;
 import fr.grimtown.RaidToDragon.logs.ReviveLog;
 import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
+import fr.grimtown.RaidToDragon.utils.ReflectionUtils;
 import net.citizensnpcs.api.event.DespawnReason;
 import net.citizensnpcs.api.event.NPCRightClickEvent;
 import org.bukkit.GameMode;
 import org.bukkit.Material;
+import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageEvent;
+import org.bukkit.event.entity.EntityPortalEnterEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerMoveEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
+
+import java.lang.reflect.Method;
 
 public class ListenerManager implements Listener {
 
@@ -48,7 +55,6 @@ public class ListenerManager implements Listener {
     public void onPlayerInteract(final PlayerInteractEvent event) {
         if (event.getHand() != EquipmentSlot.HAND)
             return;
-
         GadgetLogic.run(event);
     }
 
@@ -58,9 +64,23 @@ public class ListenerManager implements Listener {
     }
 
     @EventHandler
-    public void onInteractNPC(final NPCRightClickEvent event) {
+    public void onNPCRightClick(final NPCRightClickEvent event) {
         ReviveLogic.run(event);
     }
 
-    // TODO : cancel leave spectate mode when player's dead and was not yet revived. Perhaps the event is already in paper so just analyse paper's code to reproduce the same behaviour here
+    @EventHandler
+    public void onPlayerStopSpectatingEntity(final PlayerStopSpectatingEntityEvent event) {
+        SpectatingLogic.run(event);
+    }
+
+    @EventHandler
+    public void onEntityPortalEnter(final EntityPortalEnterEvent event) {
+        if (event.getEntity() instanceof Player)
+            WinLogic.run(event);
+    }
+
+    @EventHandler
+    public void onPlayerChangedWorld(final PlayerChangedWorldEvent event) {
+        WinLogic.run(event);
+    }
 }

@@ -6,7 +6,6 @@ import fr.grimtown.RaidToDragon.updaters.OtherUpdater;
 import fr.grimtown.RaidToDragon.updaters.RegenUpdater;
 import fr.grimtown.RaidToDragon.updaters.TotemUpdater;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
