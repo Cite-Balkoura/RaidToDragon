@@ -1,7 +1,6 @@
 package fr.grimtown.RaidToDragon.updaters;
 
 import fr.grimtown.RaidToDragon.config.Config;
-import fr.grimtown.RaidToDragon.entities.GameManager;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
 import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
@@ -37,26 +36,29 @@ public class TotemUpdater extends BukkitRunnable {
                 Vector normalized;
                 final Location playerLocation = player.getEyeLocation().subtract(0, 0.5, 0);
                 for (final GamePlayer mates : gamePlayer.getTeam().getPlayers()) {
-                    if (mates.getUniqueId().equals(gamePlayer.getUniqueId()))
-                        continue;
-                    if (mates.isDead() || !mates.isOnline())
-                        vector = mates.getLastGroundPosition().clone().subtract(playerLocation).toVector();
-                    else
-                        vector = GameAdapter.adapt(mates).get().getLocation().clone().subtract(playerLocation).toVector();
-                    normalized = vector.clone().normalize();
-                    int maxLength = Config.get().getTotemLength();
-                    if (maxLength == -1)
-                        maxLength = (int) vector.length();
-                    else
-                        maxLength = (int) Math.min(vector.length(), maxLength);
-                    for (int block = 0; block < maxLength; block++) {
-                        for (int particle = 1; particle <= this.particles; particle++) {
-                            new ParticleBuilder(ParticleEffect.REDSTONE)
-                                    .setAmount(0)
-                                    .setParticleData(new RegularColor(255, 20, 255))
-                                    .setLocation(playerLocation.clone().add(normalized.clone().multiply(block).multiply(1D / this.particles).multiply(particle * (1 + (this.step / this.cycle) % 1))))
-                                    .display(player);
+                    try {
+                        if (mates.getUniqueId().equals(gamePlayer.getUniqueId()))
+                            continue;
+                        if (mates.isDead() || !mates.isOnline())
+                            vector = mates.getLastGroundPosition().clone().subtract(playerLocation).toVector();
+                        else
+                            vector = GameAdapter.adapt(mates).get().getLocation().clone().subtract(playerLocation).toVector();
+                        normalized = vector.clone().normalize();
+                        int maxLength = Config.get().getTotemLength();
+                        if (maxLength == -1)
+                            maxLength = (int) vector.length();
+                        else
+                            maxLength = (int) Math.min(vector.length(), maxLength);
+                        for (int block = 0; block < maxLength; block++) {
+                            for (int particle = 1; particle <= this.particles; particle++) {
+                                new ParticleBuilder(ParticleEffect.REDSTONE)
+                                        .setAmount(0)
+                                        .setParticleData(new RegularColor(255, 20, 255))
+                                        .setLocation(playerLocation.clone().add(normalized.clone().multiply(block).multiply(1D / this.particles).multiply(particle * (1 + (this.step / this.cycle) % 1))))
+                                        .display(player);
+                            }
                         }
+                    } catch (IllegalArgumentException ignored) {
                     }
                 }
             }

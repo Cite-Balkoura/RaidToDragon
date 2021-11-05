@@ -1,7 +1,6 @@
 package fr.grimtown.RaidToDragon.entities;
 
 import fr.grimtown.RaidToDragon.updaters.gadgets.GadgetUpdater;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 
 import java.util.ArrayList;
@@ -23,7 +22,6 @@ public class GamePlayer {
 
     private boolean dead;
     private boolean alreadyRevive;
-    private double enderDamage;
 
     private long lastRegen;
     private long startTime;
@@ -41,7 +39,6 @@ public class GamePlayer {
 
         this.dead = false;
         this.alreadyRevive = false;
-        this.enderDamage = 0;
         this.startTime = -1;
         this.deadTime = -1;
         this.portalEndTime = -1;
@@ -55,7 +52,7 @@ public class GamePlayer {
     }
 
     public void resurrect(final GamePlayer doctor) {
-        if (this.alreadyRevive)
+        if (this.alreadyRevive || (doctor.getTeam() != this.team && doctor.isRealPlayer() && doctor.isAlive()))
             return;
         this.alreadyRevive = true;
         this.resurrectTime = System.currentTimeMillis();
@@ -115,14 +112,6 @@ public class GamePlayer {
         return this.alreadyRevive;
     }
 
-    public double getEnderDamage() {
-        return this.enderDamage;
-    }
-
-    public void addEnderDamage(final double enderDamage) {
-        this.enderDamage += enderDamage;
-    }
-
     public long getLastRegen() {
         return this.lastRegen;
     }
@@ -151,8 +140,12 @@ public class GamePlayer {
         this.portalEndTime = portalEndTime;
     }
 
-    public long timeUntilEnter() {
-        return this.portalEndTime - this.startTime;
+    public long getFirstDeathTime() {
+        return this.firstDeathTime;
+    }
+
+    public long getResurrectTime() {
+        return this.resurrectTime;
     }
 
     public boolean isOnline() {

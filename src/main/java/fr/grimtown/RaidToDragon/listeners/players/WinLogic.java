@@ -1,5 +1,7 @@
 package fr.grimtown.RaidToDragon.listeners.players;
 
+import fr.grimtown.RaidToDragon.entities.GamePlayer;
+import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
 import fr.grimtown.RaidToDragon.logs.VictoryLog;
 import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
 import org.bukkit.World;
@@ -9,6 +11,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 public class WinLogic {
@@ -22,7 +25,7 @@ public class WinLogic {
             public void run() {
                 POTENTIAL_WINNERS.remove(event.getEntity().getUniqueId());
             }
-        }.runTaskLater(RaidPlugin.get(), 20L); // TODO : the time may be reduced
+        }.runTaskLater(RaidPlugin.get(), 10L); // TODO : the time may be reduced
     }
 
     public static void run(final PlayerChangedWorldEvent event) {
@@ -31,6 +34,14 @@ public class WinLogic {
                 event.getPlayer().getWorld().getEnvironment() != World.Environment.NORMAL)
             return;
         // TODO : stop the game because the player just went into the end portal to go back in overworld
-        new VictoryLog(event.getPlayer());
+        final Optional<GamePlayer> gamePlayer = GameAdapter.adapt(event.getPlayer());
+        if (gamePlayer.isEmpty() || !gamePlayer.get().isRealPlayer() && gamePlayer.get().isAlive())
+            return;
+
+        final UUID[] winners = new UUID[gamePlayer.get().getTeam().getPlayers().length];
+        for (int i = 0; i < winners.length; i++) {
+            winners[i] = gamePlayer.get().getTeam().getPlayers()[i].getUniqueId();
+        }
+        new VictoryLog(event.getPlayer(), winners);
     }
 }

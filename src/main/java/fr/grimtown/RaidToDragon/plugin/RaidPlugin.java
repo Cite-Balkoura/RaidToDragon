@@ -7,9 +7,11 @@ import fr.grimtown.RaidToDragon.config.Permissions;
 import fr.grimtown.RaidToDragon.entities.GameManager;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
 import fr.grimtown.RaidToDragon.entities.GameTeam;
+import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
 import fr.grimtown.RaidToDragon.libs.citizens.trait.SleepingTrait;
 import fr.grimtown.RaidToDragon.listeners.ListenerManager;
 import fr.grimtown.RaidToDragon.listeners.players.DeathLogic;
+import fr.grimtown.RaidToDragon.utils.ItemSerializer;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
 import org.bukkit.GameMode;
@@ -23,7 +25,6 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Arrays;
-import java.util.HashMap;
 import java.util.stream.Collectors;
 
 public class RaidPlugin extends JavaPlugin {
@@ -120,10 +121,10 @@ public class RaidPlugin extends JavaPlugin {
           Create managers
          */
         CitizensAPI.getTraitFactory().getRegisteredTraits()
-                .stream().filter(traitInfo -> traitInfo.getTraitName().equalsIgnoreCase("sleeping"))
+                .stream().filter(traitInfo -> traitInfo.getTraitName().equalsIgnoreCase("sleepingRaidToDragon"))
                 .collect(Collectors.toList())
                 .forEach(traitInfo -> CitizensAPI.getTraitFactory().deregisterTrait(traitInfo));
-        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleeping"));
+        CitizensAPI.getTraitFactory().registerTrait(TraitInfo.create(SleepingTrait.class).withName("sleepingRaidToDragon"));
 
         this.commandManager = new CommandManager();
         this.getCommand("raidtodragon").setExecutor(this.commandManager);
@@ -150,6 +151,11 @@ public class RaidPlugin extends JavaPlugin {
             npc.destroy();
         });
 
+        CitizensAPI.getTraitFactory().getRegisteredTraits()
+                .stream().filter(traitInfo -> traitInfo.getTraitName().equalsIgnoreCase("sleepingRaidToDragon"))
+                .collect(Collectors.toList())
+                .forEach(traitInfo -> CitizensAPI.getTraitFactory().deregisterTrait(traitInfo));
+
         this.getServer().removeRecipe(this.watchKey);
         this.getServer().removeRecipe(this.compassKey);
         this.getServer().removeRecipe(this.totemKey);
@@ -165,6 +171,13 @@ public class RaidPlugin extends JavaPlugin {
         final GameTeam gameTeam = new GameTeam(new GamePlayer[] { gamePlayer });
         gamePlayer.setTeam(gameTeam);
         this.getGameManager().getPlayers().put(player.getUniqueId(), gamePlayer);
+    }
+
+    public void unregister(final Player player) {
+        GameAdapter.adapt(player).ifPresent(gamePlayer -> {
+            gamePlayer.setLastKnownInventory(ItemSerializer.playerInventoryToBase64(player.getInventory()));
+            gamePlayer.setOnline(false);
+        });
     }
 
     public CommandManager getCommandManager() {

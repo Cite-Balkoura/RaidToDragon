@@ -13,7 +13,6 @@ import net.citizensnpcs.trait.Gravity;
 import net.citizensnpcs.trait.MountTrait;
 import net.citizensnpcs.trait.SkinTrait;
 import org.bukkit.Bukkit;
-import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
@@ -33,14 +32,14 @@ public class DeathLogic {
                 event.getEntity().getLastDamageCause() == null ?
                         EntityType.MARKER : event.getEntity().getLastDamageCause().getEntityType(),
                 Optional.ofNullable(event.getEntity().getKiller()));
-        // TODO : to complete later with fun messages
+        // TODO : to complete later with fun messages or not
         GameAdapter.adapt(event.getEntity()).ifPresent(player -> {
             final Location location = event.getEntity().getLocation();
             location.setPitch(0.1f);
             player.kill();
             NPC npc = null;
             final boolean alone = Arrays.stream(player.getTeam().getPlayers()).noneMatch(GamePlayer::isAlive);
-            if (!player.wasRevived() && !alone) {
+            if (!player.wasRevived() || alone) {
                 npc = CitizensAPI.getNPCRegistry().createNPC(EntityType.PLAYER, String.valueOf(UUID.randomUUID()));
                 npc.setName("");
                 npc.setAlwaysUseNameHologram(false);
@@ -70,11 +69,15 @@ public class DeathLogic {
             final NPC finalNpc = npc;
             Bukkit.getScheduler().runTaskLater(RaidPlugin.get(), () -> {
                 event.getEntity().spigot().respawn();
-                event.getEntity().setGameMode(GameMode.SPECTATOR);
-                if (finalNpc != null)
-                    event.getEntity().setSpectatorTarget(finalNpc.getEntity());
-                else // TODO : make player spectate other team mate or kick if all members of his team are dead
-                    event.getEntity().teleport(location);
+                // event.getEntity().setGameMode(GameMode.SPECTATOR);
+                if (finalNpc != null) {
+                    if (alone)
+                        Arrays.stream(player.getTeam().getPlayers()).filter(GamePlayer::isOnline).forEach(gamePlayer -> GameAdapter.adapt(gamePlayer).ifPresent(mate -> mate.setSpectatorTarget(finalNpc.getEntity())));
+                    else
+                        event.getEntity().setSpectatorTarget(finalNpc.getEntity());
+                } else
+                    event.getEntity().setSpectatorTarget(GameAdapter.adapt(Arrays.stream(player.getTeam().getPlayers()).filter(mate -> mate.isAlive() && mate != player).findFirst().get()).get());
+
             }, 2L);
         });
     }
