@@ -5,6 +5,8 @@ import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
 import fr.grimtown.RaidToDragon.updaters.OtherUpdater;
 import fr.grimtown.RaidToDragon.updaters.RegenUpdater;
 import fr.grimtown.RaidToDragon.updaters.TotemUpdater;
+import org.bukkit.World;
+import org.bukkit.WorldCreator;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,12 +21,17 @@ public class GameManager {
     private final OtherUpdater other;
     private final TotemUpdater totem;
 
+    private final World world;
+
     public GameManager() {
         this.players = new HashMap<>();
         this.started = false;
         this.regen = new RegenUpdater();
         this.other = new OtherUpdater(this);
         this.totem = new TotemUpdater();
+
+        final WorldCreator worldCreator = new WorldCreator(Config.get().getWorldName());
+        this.world = RaidPlugin.get().getServer().createWorld(worldCreator);
     }
 
     public void start() {
@@ -53,5 +60,9 @@ public class GameManager {
 
     public boolean isStarted() {
         return this.started;
+    }
+
+    public World getWorld() {
+        return this.world;
     }
 }

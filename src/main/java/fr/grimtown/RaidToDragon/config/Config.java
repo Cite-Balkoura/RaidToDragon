@@ -21,6 +21,8 @@ public class Config {
 
     private boolean debug = true;
 
+    private String world_name = "raidtodragon";
+
     private double regen_strength = 0.5D;
     private long regen_time = 5 * 60 * 60 * 1000L;
     private long regen_update = 15 * 20L;
@@ -77,6 +79,10 @@ public class Config {
 
     public boolean hasDebugMode() {
         return debug;
+    }
+
+    public String getWorldName() {
+        return world_name;
     }
 
     public double getRegenStrength() {

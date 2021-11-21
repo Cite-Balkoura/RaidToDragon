@@ -1,4 +1,4 @@
-package fr.grimtown.RaidToDragon.utils;
+package fr.grimtown.RaidToDragon.mongo;
 
 import com.google.gson.JsonObject;
 import fr.grimtown.RaidToDragon.entities.GamePlayer;
@@ -14,8 +14,8 @@ public class MongoConnect {
     }
 
     // from JSON to GamePlayer
-    public static GamePlayer getGamePlayer(final JsonObject json) {
-        return new GamePlayer(UUID.fromString(json.get("uuid").getAsString()));
+    public static PlayerData getPlayer(final JsonObject json) {
+        return new PlayerData();
     }
 
     // insert Event into MongoDB

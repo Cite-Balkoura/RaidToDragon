@@ -2,6 +2,7 @@ package fr.grimtown.RaidToDragon.commands;
 
 import fr.grimtown.RaidToDragon.config.Messages;
 import fr.grimtown.RaidToDragon.logs.Logger;
+import fr.grimtown.RaidToDragon.plugin.RaidPlugin;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
@@ -22,6 +23,10 @@ public final class CommandManager implements CommandExecutor, TabCompleter {
 
     @Override
     public boolean onCommand(final @NotNull CommandSender commandSender, final @NotNull Command bukkitCommand, final @NotNull String label, final String[] args) {
+        // Check if sender is a player then teleport him to RaidPlugin.get().getManager()'s world
+//        if (commandSender instanceof Player player) {
+//            player.teleport(RaidPlugin.get().getServer().getWorlds().get(0).getSpawnLocation());
+//        }
         try {
             final String argsToString = String.join(" ", args);
             CommandAnnotation commandToExec = null;
@@ -39,7 +44,7 @@ public final class CommandManager implements CommandExecutor, TabCompleter {
                 Logger.log(commandSender, Messages.ERROR_COMMAND_UNKNOWN.get("/" + label + " " + argsToString));
                 return false;
             }
-            if (commandToExec.permission().isBlank() || commandSender.hasPermission(commandToExec.permission())) {
+            if (commandToExec.permission().hasPermission(commandSender)) {
                 final ArrayList<String> arguments = Arrays.stream(argsToString.replaceFirst(commandToExec.command() + " ?", "").split(" ")).map(argument -> argument.replace("\\_", "")).collect(Collectors.toCollection(ArrayList::new));
                 if (arguments.size() >= 1 && arguments.get(0).isBlank())
                     arguments.remove(0);
@@ -57,7 +62,7 @@ public final class CommandManager implements CommandExecutor, TabCompleter {
                 }
                 return this.commands.get(commandToExec).run(commandSender, arguments);
             } else {
-                Logger.log(commandSender, Messages.ERROR_COMMAND_PERMISSION.get(commandToExec.permission(), "/" + label + " " + commandToExec.command()));
+                Logger.log(commandSender, Messages.ERROR_COMMAND_PERMISSION.get(commandToExec.permission().get(), "/" + label + " " + commandToExec.command()));
             }
         } catch (Exception e) {
             Logger.log(commandSender, Messages.ERROR_UNKNOWN.get(), e);

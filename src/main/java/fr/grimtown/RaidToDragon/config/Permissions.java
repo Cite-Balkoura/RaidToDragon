@@ -8,8 +8,10 @@ import java.io.File;
 
 public enum Permissions {
 
+    NONE                            (""),
     ADMIN                           ("grimtown.raidtodragon.admin"),
     DEBUG                           ("grimtown.raidtodragon.debug"),
+    START                           ("grimtown.raidtodragon.start")
 
     ;
 
@@ -28,6 +30,8 @@ public enum Permissions {
             }
             final YamlConfiguration config = YamlConfiguration.loadConfiguration(file);
             for (final Permissions permissions : Permissions.values()) {
+                if (permissions == Permissions.NONE)
+                    continue;
                 final String pathToMessage = permissions.name().replace("__", "-").replace("_", ".").toLowerCase();
                 if (!FileUtil.addDefault(config, pathToMessage, permissions.permission)) {
                     permissions.permission = config.getString(pathToMessage);
@@ -43,6 +47,8 @@ public enum Permissions {
     }
 
     public boolean hasPermission(final CommandSender sender) {
+        if (this.permission.equalsIgnoreCase(""))
+            return true;
         return sender.hasPermission(Permissions.ADMIN.permission) || sender.hasPermission(this.permission);
     }
 

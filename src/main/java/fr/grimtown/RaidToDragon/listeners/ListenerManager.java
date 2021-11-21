@@ -16,14 +16,12 @@ import org.bukkit.GameMode;
 import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.EntityType;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Event;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
-import org.bukkit.event.entity.EntityDamageByEntityEvent;
-import org.bukkit.event.entity.EntityDamageEvent;
-import org.bukkit.event.entity.EntityPortalEnterEvent;
-import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.entity.*;
 import org.bukkit.event.player.*;
 import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.ItemStack;
@@ -31,6 +29,15 @@ import org.bukkit.inventory.ItemStack;
 import java.lang.reflect.Method;
 
 public class ListenerManager implements Listener {
+
+    @EventHandler
+    public void onEntitySpawn(final EntitySpawnEvent event) {
+        if (event.getEntityType() != EntityType.PLAYER) {
+            if (!RaidPlugin.get().getGameManager().isStarted()) {
+                event.setCancelled(true);
+            }
+        }
+    }
 
     @EventHandler
     public void onPlayerDeath(final PlayerDeathEvent event) {
@@ -49,6 +56,10 @@ public class ListenerManager implements Listener {
 
     @EventHandler
     public void onEntityDamage(final EntityDamageEvent event) {
+        if (!RaidPlugin.get().getGameManager().isStarted() && event.getEntityType() == EntityType.PLAYER) {
+            event.setCancelled(true);
+            return;
+        }
         PiglinLogic.run(event);
     }
 

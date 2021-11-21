@@ -1,6 +1,7 @@
 package fr.grimtown.RaidToDragon.plugin;
 
 import fr.grimtown.RaidToDragon.commands.CommandManager;
+import fr.grimtown.RaidToDragon.commands.handle.StartCommand;
 import fr.grimtown.RaidToDragon.config.Config;
 import fr.grimtown.RaidToDragon.config.Messages;
 import fr.grimtown.RaidToDragon.config.Permissions;
@@ -129,6 +130,7 @@ public class RaidPlugin extends JavaPlugin {
         this.commandManager = new CommandManager();
         this.getCommand("raidtodragon").setExecutor(this.commandManager);
         this.getCommand("raidtodragon").setTabCompleter(this.commandManager);
+        this.commandManager.registerCommands(new StartCommand());
 
         this.listenerManager = new ListenerManager();
         this.getServer().getPluginManager().registerEvents(this.listenerManager, this);
@@ -167,6 +169,8 @@ public class RaidPlugin extends JavaPlugin {
             this.gameManager.getPlayers().get(player.getUniqueId()).setOnline(true);
             return;
         }
+        if (!this.gameManager.isStarted())
+            player.teleport(this.gameManager.getWorld().getSpawnLocation());
         final GamePlayer gamePlayer = new GamePlayer(player.getUniqueId());
         final GameTeam gameTeam = new GameTeam(new GamePlayer[] { gamePlayer });
         gamePlayer.setTeam(gameTeam);
