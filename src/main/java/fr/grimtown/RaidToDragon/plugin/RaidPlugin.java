@@ -1,5 +1,6 @@
 package fr.grimtown.RaidToDragon.plugin;
 
+import dev.morphia.Datastore;
 import fr.grimtown.RaidToDragon.commands.CommandManager;
 import fr.grimtown.RaidToDragon.commands.handle.StartCommand;
 import fr.grimtown.RaidToDragon.config.Config;
@@ -12,6 +13,7 @@ import fr.grimtown.RaidToDragon.entities.adapters.GameAdapter;
 import fr.grimtown.RaidToDragon.libs.citizens.trait.SleepingTrait;
 import fr.grimtown.RaidToDragon.listeners.ListenerManager;
 import fr.grimtown.RaidToDragon.listeners.players.DeathLogic;
+import fr.grimtown.RaidToDragon.mongo.MongoConnect;
 import fr.grimtown.RaidToDragon.utils.ItemSerializer;
 import net.citizensnpcs.api.CitizensAPI;
 import net.citizensnpcs.api.trait.TraitInfo;
@@ -38,6 +40,8 @@ public class RaidPlugin extends JavaPlugin {
     private ListenerManager listenerManager;
     private GameManager gameManager;
 
+    private static Datastore datastore;
+
     private NamespacedKey watchKey;
     private ItemStack watch;
 
@@ -55,6 +59,11 @@ public class RaidPlugin extends JavaPlugin {
         Config.get().init(this.getDataFolder().getAbsolutePath(), "config.yml");
         Messages.init(this.getDataFolder().getAbsolutePath(), "messages.yml");
         Permissions.init(this.getDataFolder().getAbsolutePath(), "permissions.yml");
+
+        /*
+          Init MongoClient (Morphia Datastore)
+         */
+        datastore = new MongoConnect().initDatastore(this.getConfig());
 
         /*
           Generate all crafts
@@ -182,6 +191,14 @@ public class RaidPlugin extends JavaPlugin {
             gamePlayer.setLastKnownInventory(ItemSerializer.playerInventoryToBase64(player.getInventory()));
             gamePlayer.setOnline(false);
         });
+    }
+
+    /**
+     * Get the datastore init in {@link #onEnable()}
+     * @return loaded datastore
+     */
+    public static Datastore getDatastore() {
+        return datastore;
     }
 
     public CommandManager getCommandManager() {

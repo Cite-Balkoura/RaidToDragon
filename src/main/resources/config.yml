@@ -1,0 +1,8 @@
+data:
+  mongo:
+    host : "172.18.0.1"
+    port : 27017
+    user: "minecraft"
+    password: "hey_hey"
+    db: "admin"
+    database: "event_raid_to_dragon"

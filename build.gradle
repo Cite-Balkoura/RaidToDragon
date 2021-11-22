@@ -30,6 +30,8 @@ dependencies {
     shadow group: 'io.papermc.paper', name: 'paper-api', version: spigotVersion + subVersion + '-R0.1-SNAPSHOT'
     shadow group: 'net.citizensnpcs', name: 'citizens', version: '2.0.28-SNAPSHOT'
     shadow group: 'com.github.InventivetalentDev', name: 'GlowAPI', version: '1.5.1-SNAPSHOT'
+    compileOnly group: 'org.mongodb', name: 'mongodb-driver-sync', version: '4.4.0'
+    compileOnly group: 'dev.morphia.morphia', name: 'morphia-core', version: '2.2.3'
     implementation group: 'xyz.xenondevs', name: 'particle', version: '1.6.6'
 }
 

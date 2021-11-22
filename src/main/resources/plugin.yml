@@ -9,6 +9,9 @@ depend:
 author: GrimTown
 authors:
   - BakaAless (Aless#6161)
+libraries:
+  - org.mongodb:mongodb-driver-sync:4.4.0
+  - dev.morphia.morphia:morphia-core:2.2.3
 commands:
   raidtodragon:
     aliases:
